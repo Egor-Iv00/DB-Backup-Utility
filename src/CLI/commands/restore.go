@@ -1,11 +1,13 @@
 package commands
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+)
 
-func BackupCmd() *cobra.Command {
+func RestoreCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "backup",
-		Short: "command for create backup db",
+		Use:   "restore",
+		Short: "command to restore DB",
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			return nil
@@ -13,7 +15,7 @@ func BackupCmd() *cobra.Command {
 	}
 	cmd.Flags().StringP("host", "H", "", "Host")
 	cmd.Flags().IntP("port", "P", 0, "Port")
-	cmd.Flags().StringP("database", "", "", "Type DB")
+	cmd.Flags().StringP("database", "", "postgres", "Type DB")
 	cmd.Flags().StringP("dbname", "N", "", "Name db to connect")
 	cmd.Flags().StringP("username", "U", "", "Username")
 	cmd.Flags().StringP("password", "", "", "Password")
