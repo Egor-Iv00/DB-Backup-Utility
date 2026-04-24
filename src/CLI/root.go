@@ -7,7 +7,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "db-backup",
+	Use:   "dbtool",
 	Short: "main",
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		return commands.InitConfig(cmd)

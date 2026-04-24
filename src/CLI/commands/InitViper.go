@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -11,8 +13,8 @@ func InitConfig(cmd *cobra.Command) error {
 	v := viper.New()
 
 	v.SetConfigName("config")
-	v.SetConfigType("JSON")
-	v.AddConfigPath(".")
+	v.SetConfigType("json")
+	v.AddConfigPath("./CLI/")
 
 	v.SetEnvPrefix("DB")
 	v.AutomaticEnv()
@@ -21,6 +23,7 @@ func InitConfig(cmd *cobra.Command) error {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			return err
 		}
+		fmt.Println("Config file not found")
 	}
 
 	if err := v.BindPFlags(cmd.Flags()); err != nil {

@@ -1,0 +1,9 @@
+{
+    "host":"localhost",
+    "port": 5432,
+    "database":"postgres",
+    "dbname":"testdb",
+    "username":"user1",
+    "password":"123456",
+    "path":"./files/backup.dump"
+}
