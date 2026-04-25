@@ -1,7 +1,8 @@
 package commands
 
 import (
-	"dbtool/DBdrivers"
+	"dbtool/DBinterface"
+	"dbtool/DBinterface/DBdrivers"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -13,28 +14,30 @@ func RestoreCmd() *cobra.Command {
 		Short:        "command to restore DB",
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := InitConfig(cmd); err != nil {
-				return fmt.Errorf("init config error: %w", err)
-			}
 
-			conf := DBdrivers.Config{}
-			conf.Host = GlobalViper.GetString("host")
-			conf.Port = GlobalViper.GetInt("port")
-			conf.DBName = GlobalViper.GetString("dbname")
-			conf.User = GlobalViper.GetString("username")
-			conf.Password = GlobalViper.GetString("password")
+			conf := DBinterface.Config{}
+			if err := InitCmd(cmd, &conf); err != nil {
+				return err
+			}
 			conf.FilePath = GlobalViper.GetString("path")
-			if conf.Host == "" {
-				return fmt.Errorf("host is empty. Set it in config.json or use --host flag")
-			}
-			if conf.User == "" {
-				return fmt.Errorf("username is empty. Set it in config.json or use --username flag")
-			}
-			if conf.Port == 0 {
-				conf.Port = 5432
-			}
-			if RuntimeErr := DBdrivers.RestorePostgres(conf); RuntimeErr != nil {
-				return RuntimeErr
+
+			switch conf.DBtype {
+			case "postgres":
+				{
+					if RuntimeErr := DBdrivers.RestorePostgres(conf); RuntimeErr != nil {
+						return RuntimeErr
+					}
+				}
+			case "mysql":
+				{
+					if RuntimeErr := DBdrivers.RestoreMySQL(conf); RuntimeErr != nil {
+						return RuntimeErr
+					}
+				}
+			default:
+				{
+					return fmt.Errorf("Unknown DB name!")
+				}
 			}
 			return nil
 		},
