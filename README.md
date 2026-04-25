@@ -30,7 +30,7 @@
   
 ## Сборка  
 ```Bash
-https://github.com/Egor-Iv00/DB-Backup-Utility.git
+git clone https://github.com/Egor-Iv00/DB-Backup-Utility.git
 cd DB-Backup-Utility/src
 go build -o dbtool
 ```
