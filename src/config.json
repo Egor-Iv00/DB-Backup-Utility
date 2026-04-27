@@ -1,9 +1,15 @@
 {
     "host":"localhost",
-    "port": 5432,
-    "database":"postgres",
+    "port": 3306,
+    "database":"mysql",
     "dbname":"",
     "username":"",
     "password":"",
-    "path":"./files/backup.dump"
+    "path":"./files/backup.sql",
+    "usecloud": false,
+    "endpoint":"storage.yandexcloud.net",
+    "accesskey":"",
+    "secretkey":"",
+    "bucketname":""    
+    
 }

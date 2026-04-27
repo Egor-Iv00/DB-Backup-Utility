@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"dbtool/Cloud"
 	"dbtool/DBinterface"
 	"dbtool/DBinterface/DBdrivers"
 	"fmt"
@@ -21,15 +22,33 @@ func RestoreCmd() *cobra.Command {
 			}
 			conf.FilePath = GlobalViper.GetString("path")
 
+			CloudConf := Cloud.CloudConfig{}
+			if CloudConf.IsUse = GlobalViper.GetBool("usecloud"); CloudConf.IsUse {
+				if err := Cloud.InitCloud(&CloudConf, GlobalViper); err != nil {
+					return err
+				}
+			}
+
 			switch conf.DBtype {
 			case "postgres":
 				{
+					if CloudConf.IsUse {
+						if RuntimeErr := Cloud.RestoreCloud(CloudConf, conf); RuntimeErr != nil {
+							return RuntimeErr
+						}
+					}
 					if RuntimeErr := DBdrivers.RestorePostgres(conf); RuntimeErr != nil {
 						return RuntimeErr
 					}
+
 				}
 			case "mysql":
 				{
+					if CloudConf.IsUse {
+						if RuntimeErr := Cloud.RestoreCloud(CloudConf, conf); RuntimeErr != nil {
+							return RuntimeErr
+						}
+					}
 					if RuntimeErr := DBdrivers.RestoreMySQL(conf); RuntimeErr != nil {
 						return RuntimeErr
 					}
@@ -49,6 +68,11 @@ func RestoreCmd() *cobra.Command {
 	cmd.Flags().StringP("username", "U", "", "Username")
 	cmd.Flags().StringP("password", "", "", "Password")
 	cmd.Flags().StringP("path", "", ".", "The path where file will be checked")
+	cmd.Flags().BoolP("usecloud", "", false, "Use cloud or not?")
+	cmd.Flags().StringP("accesskey", "A", "", "Access key for S3")
+	cmd.Flags().StringP("secretkey", "S", "", "Secret key for S3")
+	cmd.Flags().StringP("endpoint", "E", "", "Endpoint")
+	cmd.Flags().StringP("bucketname", "B", "", "Name of bucket where file is")
 
 	return cmd
 }
